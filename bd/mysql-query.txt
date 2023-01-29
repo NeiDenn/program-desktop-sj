@@ -1,0 +1,123 @@
+-- borra la bd si existe
+DROP DATABASE IF EXISTS bd_sistema_ventas_jorge;
+
+-- crear la base de datos
+create database bd_sistema_ventas_jorge;
+
+-- usar la base de datos
+use bd_sistema_ventas_jorge;
+
+-- tabla usuario
+create table tb_usuario(
+idUsuario int (11) auto_increment primary key,
+nombre	 varchar (30) not null,
+apellido varchar (30) not null,
+usuario	 varchar (30) not null,
+password varchar (16) not null,
+telefono varchar (16) not null,
+estado 	  int (1) not null
+);
+
+-- tabla cliente
+create table tb_cliente(
+idCliente int (11) auto_increment primary key,
+nombre 	varchar (30) not null,
+apellido varchar (30) not null,
+dni 	varchar (20) not null,
+telefono varchar (15) not null,
+direccion varchar (90) not null,
+estado 	int (1) not null
+);
+
+-- tabla categoria
+create table tb_categoria(
+idCategoria int (11) auto_increment primary key,
+descripcion varchar (150) not null,
+estado 	int (1) not null
+);
+
+-- tabla producto
+create table tb_producto(
+idProducto int (11) auto_increment primary key,
+nombre 	varchar (100) not null,
+cantidad int (15) not null,
+precio double (10,2) not null,
+descripcion varchar (200) not null,
+igv int (3) not null,
+idCategoria int (11) not null,
+estado 	int (1) not null,
+foreign key (idCategoria) references tb_categoria(idCategoria)
+);
+
+-- tabla cabecera de ventas
+create table tb_cabecera_venta(
+idCabeceraVenta int (11) auto_increment primary key,
+idCliente int (11) not null,
+valorPagar double(10,2) not null,
+fechaVenta date not null,
+estado 	int (1) not null,
+idUsuario int (11) not null,
+foreign key (idCliente) references tb_cliente(idCliente),
+foreign key (idUsuario) references tb_usuario(idUsuario)
+);
+
+-- tabla detalle de venta
+create table tb_detalle_venta(
+idDetalleVenta int (11) auto_increment primary key,
+idCabeceraVenta int (11) not null,
+idProducto int (11) not null,
+cantidad int (11) not null,
+precioUnitario double (10,2) not null,
+subtotal double (10,2) not null,
+descuento double (10,2) not null,
+igv double (10,2) not null,
+totalPagar double (10,2) not null,
+estado 	int (1) not null,
+foreign key (idProducto) references tb_producto(idProducto),
+foreign key (idCabeceraVenta) references tb_cabecera_venta(idCabeceraVenta)
+);
+
+-- insertar datos a la tb_usuario
+insert into tb_usuario(nombre, apellido, usuario, password, telefono, estado)
+values("Marcelo", "Luna", "marcelo", "12345", "912923476", 1),
+	("Angel", "Nantes", "angel", "54321", "912543465", 1),
+    ("Ronaldo", "Solar", "ronaldo", "12345", "912545678", 1),
+	("Rodrigo", "Montes", "Rodrigo", "abcde", "916783476", 1),
+	("Angelica", "Valverde", "angelica", "12345", "912923239", 1);
+
+-- insertar datos a la tb_cliente
+insert into tb_cliente(nombre, apellido, dni, telefono, direccion, estado)
+values("Yovana", "Mendoza", "70804430", "923493459", "Palomares Nueva Esperanza 105", 1),
+	("Julio", "Mouhrino", "70804891", "923497895", "Manzanares Jr Baluarte 1054", 1),
+	("Ronald", "Quiñones", "70854680", "923493926", "Bolognesi Jr Republica 453", 1),
+	("Yenny", "Flores", "70907788", "923428976", "Vellavista Calle Vidaurrazaga 785", 1),
+	("Alejandra", "Quispe", "70878910", "923493890", "San Antonio Jr Rio Nuevo 1305", 1);
+
+-- insertar datos a la tb_categorias
+insert into tb_categoria(descripcion, estado)
+values("Pastas", 1),
+	("Bebidas", 2),
+	("Verduras", 3),
+	("Dulcerias", 4),
+    ("Lacteos", 5),
+    ("Enlatados", 6),
+    ("Carnes", 7),
+	("Frutas", 8);
+
+-- insertar datos a la tb_producto
+insert into tb_producto(nombre, cantidad, precio, descripcion, igv, idcategoria, estado)
+values("Fideo", 22, 1.50, "Pasta delgada", 14, 1, 1),
+	("Gaseosa", 25, 7.30, "Inka Cola", 12, 2, 2),
+	("Zanahoria", 33, 1.50, "1kl zanahoria", 12, 3, 3),
+	("Pastel", 7, 1.50, "Muffin", 12, 4, 4),
+	("Leche", 10, 2.20, "Gloria Evaporada", 12, 5, 5),
+	("Atun", 33, 2.70, "Sardinas Con Tomate", 14, 6, 6),
+	("Pollo", 12, 7.00, "1Kl pollo", 14, 7, 7);
+
+-- ver las tablas
+select * from tb_cabecera_venta;
+select * from tb_detalle_venta;
+select * from tb_categoria;
+select * from tb_producto;
+select * from tb_cliente;
+select * from tb_usuario;
